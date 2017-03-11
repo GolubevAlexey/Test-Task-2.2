@@ -81,9 +81,9 @@ public class RayOfLight implements Light {
 				iterator.remove();
 		}
 
-		if (deadKick == 3) {
+		if (deadKick >= 3) {
 
-			// Все падающие искры упали. Можно удалять.
+			// Все падающие искры упали. Можно удалять и луч
 			if (dls.size() == 0) {
 				path.clear();
 				return 1;
@@ -94,8 +94,8 @@ public class RayOfLight implements Light {
 		}
 		
 		if ((X + dx) > (center.x * 2) || (X + dx) < 0) {
-			dx = -dx;
 			deadKick++;
+			dx = -dx;			
 		}
 		if ((Y+dy) > (center.y * 2) || (Y+dy) < 0) {
 			deadKick++;
