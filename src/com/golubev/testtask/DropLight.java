@@ -1,12 +1,20 @@
 /**
+ * Необходимо создать приложение, в котором при касании пальцем экрана изображается луч, направленный из центра экрана к точке касания.
+ * Луч отражается от границ экрана 3 раза.
+ * Одновременные касания изобразить разными цветами лучей.
+ * Использовать SDK, без специализированных библиотек.
+ * 
+ * API Level: 18+
+ * Язык программирования: Java
+ * 
  * @author © Golubev Alexey 2017
+ * @version 1.0
  */
 package com.golubev.testtask;
 
 import java.util.Random;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
@@ -19,17 +27,27 @@ public class DropLight implements Light {
 	private Point center = null;
 	private double step = 0;
 
+	/**
+	 * Конструктор искры.
+	 * 
+	 * @param x
+	 *            координаты создания искры X
+	 * @param y
+	 *            координаты создания искры Y
+	 * @param center
+	 *            координаты центра
+	 * @param step
+	 *            шаг падения искры(скорость)
+	 * @param color
+	 * 			  цвет базового луча
+	 */
 	public DropLight(double x, double y, Point center, double step, int color) {
 
 		this.center = center;
 		Random rnd = new Random();
 
 		int speed = rnd.nextInt(4) + 3;
-		int z = rnd.nextInt(2);
-		if (z == 1)
-			z = 1;
-		else
-			z = -1;
+		int z = (rnd.nextInt(2) == 1) ? 1 : -1;
 		X = x;
 		Y = y;
 		b = -(x + z * speed);
@@ -37,16 +55,15 @@ public class DropLight implements Light {
 
 		this.step = z * step;
 
-		int difColor = rnd.nextInt(20);
 		mainPaint = new Paint();
-		mainPaint.setColor(Color.argb(205 + rnd.nextInt(50), Color.red(color)
-				+ difColor, Color.green(color) + difColor, Color.blue(color)
-				+ difColor));
+		mainPaint.setColor(color);
+		mainPaint.setAlpha(205 + rnd.nextInt(51));
 		mainPaint.setStrokeWidth(2f);
 	}
 
 	@Override
 	public int calculation() {
+		
 		if (!status)
 			return 1;
 
@@ -65,9 +82,8 @@ public class DropLight implements Light {
 	public void drawRay(Canvas canvas) {
 
 		if (status) {
-			mainPaint.setAlpha(RayOfLight.alphToZero(mainPaint.getAlpha(),2));
+			mainPaint.setAlpha(RayOfLight.alphToZero(mainPaint.getAlpha(), 2));
 			canvas.drawPoint(Math.round(X), Math.round(Y), mainPaint);
-
 		}
 	}
 

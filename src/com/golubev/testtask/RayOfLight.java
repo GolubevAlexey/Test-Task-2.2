@@ -1,5 +1,14 @@
 /**
+ * Необходимо создать приложение, в котором при касании пальцем экрана изображается луч, направленный из центра экрана к точке касания.
+ * Луч отражается от границ экрана 3 раза.
+ * Одновременные касания изобразить разными цветами лучей.
+ * Использовать SDK, без специализированных библиотек.
+ * 
+ * API Level: 18+
+ * Язык программирования: Java
+ * 
  * @author © Golubev Alexey 2017
+ * @version 1.0
  */
 package com.golubev.testtask;
 
@@ -12,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.util.Log;
 
 public class RayOfLight implements Light {
 
@@ -22,8 +30,12 @@ public class RayOfLight implements Light {
 	private Point center = null;
 	private int deadKick = 0;
 	private Paint mainPaint = null;
+	
+	// коллекция искр
 	private HashSet<DropLight> dls = null;
 	private int eachFifth = 0;
+	
+	// путь луча должен быть связанным
 	private LinkedHashSet<Point> path = new LinkedHashSet<Point>();
 
 	/**
@@ -36,9 +48,7 @@ public class RayOfLight implements Light {
 	 * @param center
 	 *            координаты центра
 	 * @param step
-	 *            шаг луча @
-	 * 
-	 * @return 1-если можно удалять
+	 *            шаг луча(скорость)
 	 */
 	public RayOfLight(double x, double y, Point center, double step) {
 
@@ -58,8 +68,8 @@ public class RayOfLight implements Light {
 
 		mainPaint = new Paint();
 		Random rnd = new Random();
-		mainPaint.setColor(Color.argb(255, rnd.nextInt(255), rnd.nextInt(255),
-				rnd.nextInt(255)));
+		mainPaint.setColor(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
+				rnd.nextInt(256)));
 
 		dls = new HashSet<DropLight>();
 

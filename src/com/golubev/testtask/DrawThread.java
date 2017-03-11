@@ -1,5 +1,14 @@
 /**
+ * Необходимо создать приложение, в котором при касании пальцем экрана изображается луч, направленный из центра экрана к точке касания.
+ * Луч отражается от границ экрана 3 раза.
+ * Одновременные касания изобразить разными цветами лучей.
+ * Использовать SDK, без специализированных библиотек.
+ * 
+ * API Level: 18+
+ * Язык программирования: Java
+ * 
  * @author © Golubev Alexey 2017
+ * @version 1.0
  */
 package com.golubev.testtask;
 
@@ -37,9 +46,11 @@ public class DrawThread extends Thread {
 
 	public void allAbort() {
 		gRun = false;
+		// Можно добавить удаление коллекций
 	}
 
 	public void eventTouch(int x, int y) {
+		
 		if (rol == null)
 			rol = new HashSet<RayOfLight>();
 
