@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
+import android.os.SystemClock;
 import android.view.SurfaceHolder;
 
 public class DrawThread extends Thread {
@@ -19,7 +20,7 @@ public class DrawThread extends Thread {
 	private boolean gRun = false;
 	private HashSet<RayOfLight> rol = null;
 	private Point center = null;
-	private double gStep = 3;
+	private double gStep = 4;
 
 	DrawThread(SurfaceHolder holder) {
 		this.holder = holder;
