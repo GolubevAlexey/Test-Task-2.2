@@ -49,18 +49,21 @@ public class DrawThread extends Thread {
 	}
 
 	public void run() {
-		int sum = 0;
+
 		Canvas canvas = null;
+
 		while (gRun) {
-			Paint paint = new Paint();
-			paint.setColor(Color.WHITE);
 
 			canvas = holder.lockCanvas(null);
+
 			if (canvas != null) {
+
 				canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
 
 				if (rol != null) {
+
 					synchronized (rol) {
+
 						Iterator<RayOfLight> iterator = rol.iterator();
 						while (iterator.hasNext()) {
 							RayOfLight element = iterator.next();
@@ -75,12 +78,8 @@ public class DrawThread extends Thread {
 
 				holder.unlockCanvasAndPost(canvas);
 			}
-			
-			try {
-				Thread.currentThread().sleep(10);
-			} catch (InterruptedException e) {
-				//
-			}
+
+			SystemClock.sleep(10);
 		}
 
 	}

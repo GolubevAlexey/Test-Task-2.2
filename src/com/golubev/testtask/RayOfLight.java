@@ -12,19 +12,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 
 public class RayOfLight implements Light {
 
-	// Линейное уравнение
-	private double k = 0;
-	private double b = 0;
+	private double dy = 0, dx = 0;
 	private double step = 0;
 	private double X = 0, Y = 0;
 	private Point center = null;
 	private int deadKick = 0;
 	private Paint mainPaint = null;
 	private HashSet<DropLight> dls = null;
-	private int eachTen = 0;
+	private int eachFifth = 0;
 	private LinkedHashSet<Point> path = new LinkedHashSet<Point>();
 
 	/**
@@ -43,10 +42,13 @@ public class RayOfLight implements Light {
 	 */
 	public RayOfLight(double x, double y, Point center, double step) {
 
-		k = (y - center.y) / (x - center.x);
-		b = y - k * x;
+		double k = (y - center.y) / (x - center.x);
+		
+		dx = Math.sqrt((step * step) / (1 + k * k));
 		if (x < center.x)
-			step = -step;
+			dx = -dx;
+		dy = k * dx;
+		
 		this.step = step;
 		this.center = center;
 		X = center.x;
@@ -90,34 +92,31 @@ public class RayOfLight implements Light {
 			return 0;
 
 		}
-
-		if ((X + step) > (center.x * 2) || (X + step) < 0) {
-			step = -step;
-			k = -k;
-			b = Y - k * X;
+		
+		if ((X + dx) > (center.x * 2) || (X + dx) < 0) {
+			dx = -dx;
 			deadKick++;
 		}
-
-		X = X + step;
-
-		double yTmp = k * X + b;
-		if (yTmp > (center.y * 2) || yTmp < 0) {
-			k = -k;
-			b = yTmp - k * X;
+		if ((Y+dy) > (center.y * 2) || (Y+dy) < 0) {
 			deadKick++;
+			dy = -dy;
 		}
 
-		Y = k * X + b;
+		X = X + dx;		
+		Y = Y + dy;
+		
 
 		if (deadKick < 3)
 			path.add(new Point((int) X, (int) Y));
 
-		if (eachTen == 5) {
+		if (eachFifth == 5) {
+
 			dls.add(new DropLight(X, Y, center, Math.abs(step), mainPaint
 					.getColor()));
-			eachTen = 0;
+			eachFifth = 0;
+
 		} else
-			eachTen++;
+			eachFifth++;
 
 		return 0;
 
@@ -138,7 +137,7 @@ public class RayOfLight implements Light {
 
 		Point last = null;
 		if (deadKick == 3) {
-			mainPaint.setAlpha(alphToZero(mainPaint.getAlpha(),10));
+			mainPaint.setAlpha(alphToZero(mainPaint.getAlpha(), 10));
 		}
 		for (Point p : path) {
 			if (last != null)
@@ -153,7 +152,7 @@ public class RayOfLight implements Light {
 		alpha -= step;
 		if (alpha < 0)
 			alpha = 0;
-		
+
 		return alpha;
 
 	}
