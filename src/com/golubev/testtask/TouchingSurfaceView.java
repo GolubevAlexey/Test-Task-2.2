@@ -23,6 +23,7 @@ public class TouchingSurfaceView extends SurfaceView implements
 	DrawThread drawThread = null;
 
 	public TouchingSurfaceView(Context context) {
+		
 		super(context);
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
@@ -51,8 +52,10 @@ public class TouchingSurfaceView extends SurfaceView implements
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		
 		drawThread = new DrawThread(holder);
 		drawThread.start();
+		
 	}
 
 	@Override

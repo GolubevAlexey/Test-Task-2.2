@@ -59,6 +59,7 @@ public class DropLight implements Light {
 		mainPaint.setColor(color);
 		mainPaint.setAlpha(205 + rnd.nextInt(51));
 		mainPaint.setStrokeWidth(2f);
+		
 	}
 
 	@Override
@@ -76,6 +77,7 @@ public class DropLight implements Light {
 			status = false;
 
 		return 0;
+		
 	}
 
 	@Override
@@ -85,6 +87,7 @@ public class DropLight implements Light {
 			mainPaint.setAlpha(RayOfLight.alphToZero(mainPaint.getAlpha(), 2));
 			canvas.drawPoint(Math.round(X), Math.round(Y), mainPaint);
 		}
+		
 	}
 
 }

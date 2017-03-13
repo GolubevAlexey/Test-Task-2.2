@@ -17,45 +17,53 @@ import java.util.Iterator;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class DrawThread extends Thread {
 
 	private SurfaceHolder holder = null;
 	private boolean gRun = false;
+	// тут в принципе каких то особенных требований к коллекции нет, можно
+	// выбрать почти любую
 	private HashSet<RayOfLight> rol = null;
 	private Point center = null;
 	private double gStep = 4;
 
 	DrawThread(SurfaceHolder holder) {
+
 		this.holder = holder;
 		center = new Point(
 				(holder.getSurfaceFrame().right - holder.getSurfaceFrame().left) / 2,
 				(holder.getSurfaceFrame().bottom - holder.getSurfaceFrame().top) / 2);
+
 	}
 
 	@Override
 	public void start() {
+
 		super.start();
 		gRun = true;
+
 	}
 
 	public void allAbort() {
+
 		gRun = false;
 		// ћожно добавить удаление коллекций
+
 	}
 
 	public void eventTouch(int x, int y) {
-		
+
 		if (rol == null)
 			rol = new HashSet<RayOfLight>();
 
 		synchronized (rol) {
-			rol.add(new RayOfLight(x, y, center, gStep));
+			rol.add(new RayOfLight(x, y, center, gStep));			
 		}
 
 	}

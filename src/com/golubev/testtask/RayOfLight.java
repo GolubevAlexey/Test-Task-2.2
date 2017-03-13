@@ -15,12 +15,15 @@ package com.golubev.testtask;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Random;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.os.SystemClock;
+import android.util.Log;
 
 public class RayOfLight implements Light {
 
@@ -30,12 +33,12 @@ public class RayOfLight implements Light {
 	private Point center = null;
 	private int deadKick = 0;
 	private Paint mainPaint = null;
-	
+
 	// коллекция искр
 	private HashSet<DropLight> dls = null;
 	private int eachFifth = 0;
-	
-	// путь луча должен быть связанным
+
+	// путь луча должен быть связанным,так как по нему рисуется линия.
 	private LinkedHashSet<Point> path = new LinkedHashSet<Point>();
 
 	/**
@@ -52,13 +55,20 @@ public class RayOfLight implements Light {
 	 */
 	public RayOfLight(double x, double y, Point center, double step) {
 
+		x = (x == center.x) ? (center.x - 0.0001) : x;
 		double k = (y - center.y) / (x - center.x);
-		
+
 		dx = Math.sqrt((step * step) / (1 + k * k));
 		if (x < center.x)
 			dx = -dx;
 		dy = k * dx;
-		
+
+		// ситуация с вертикальной прямой
+		if (x == center.x) {
+			dx = 0;
+			dy = (k / Math.abs(k)) * step;
+		}
+
 		this.step = step;
 		this.center = center;
 		X = center.x;
@@ -70,6 +80,7 @@ public class RayOfLight implements Light {
 		Random rnd = new Random();
 		mainPaint.setColor(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256),
 				rnd.nextInt(256)));
+		mainPaint.setStrokeWidth(1f);
 
 		dls = new HashSet<DropLight>();
 
@@ -85,6 +96,7 @@ public class RayOfLight implements Light {
 
 		Iterator<DropLight> iterator = dls.iterator();
 		while (iterator.hasNext()) {
+
 			DropLight dl = iterator.next();
 
 			if (dl.calculation() == 1)
@@ -102,19 +114,23 @@ public class RayOfLight implements Light {
 			return 0;
 
 		}
-		
+
 		if ((X + dx) > (center.x * 2) || (X + dx) < 0) {
+
 			deadKick++;
-			dx = -dx;			
-		}
-		if ((Y+dy) > (center.y * 2) || (Y+dy) < 0) {
-			deadKick++;
-			dy = -dy;
+			dx = -dx;
+
 		}
 
-		X = X + dx;		
+		if ((Y + dy) > (center.y * 2) || (Y + dy) < 0) {
+
+			deadKick++;
+			dy = -dy;
+
+		}
+
+		X = X + dx;
 		Y = Y + dy;
-		
 
 		if (deadKick < 3)
 			path.add(new Point((int) X, (int) Y));
@@ -149,6 +165,7 @@ public class RayOfLight implements Light {
 		if (deadKick == 3) {
 			mainPaint.setAlpha(alphToZero(mainPaint.getAlpha(), 10));
 		}
+
 		for (Point p : path) {
 			if (last != null)
 				canvas.drawLine(last.x, last.y, p.x, p.y, mainPaint);
